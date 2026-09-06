@@ -20,4 +20,11 @@ Every stage echoes the task it performs and the tool that would perform it, so t
 Create a Jenkins pipeline job, point it at this repository with `Pipeline script from SCM`, branch `main`, script path `Jenkinsfile`.
 
 The `triggers` block polls SCM every two minutes, so a push to `main` starts a build on its own.
-Jenkins only registers a `triggers` block after the first build, so run the job once by hand to arm it.
+
+Set the same `H/2 * * * *` schedule under Poll SCM in the job configuration as well. Jenkins only
+registers a Jenkinsfile `triggers` block once a build has parsed it, so a job relying on the block
+alone will not poll until you have run it by hand. Setting it in both places arms polling from build
+one.
+
+A build that polling started says `Started by an SCM change` at the top of its console output, rather
+than `Started by user`. That line is how you tell the trigger fired on its own.
